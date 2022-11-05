@@ -61,6 +61,12 @@ variable "gitlab_url" {
   type = string
 }
 
+variable "gitlab_runner_concurrency" {
+  type        = number
+  description = "Number of jobs that can run concurrently. Note that this is limited by the number of available IPs in the worker subnet"
+  default     = 10
+}
+
 variable "gitlab_runner_name_prefix" {
   type        = string
   description = "Prefix for the runner name as shown in Gitlab, can contain only alphanumeric characters, -, _ or . symbols."

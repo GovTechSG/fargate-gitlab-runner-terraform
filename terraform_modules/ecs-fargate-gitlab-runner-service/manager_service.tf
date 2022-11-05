@@ -50,6 +50,10 @@ module "manager_container_definition" {
       "value" : var.gitlab_url
     },
     {
+      "name" : "RUNNER_CONCURRENCY",
+      "value" : var.gitlab_runner_concurrency
+    },
+    {
       "name" : "RUNNER_NAME_PREFIX",
       "value" : var.gitlab_runner_name_prefix
     },

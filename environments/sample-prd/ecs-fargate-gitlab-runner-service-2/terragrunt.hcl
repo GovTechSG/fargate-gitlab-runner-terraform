@@ -27,6 +27,7 @@ inputs = merge(local.vars.inputs,
     gitlab_token_secret_arn    = "arn:aws:secretsmanager:${local.vars.inputs.aws_region}:${local.vars.inputs.aws_region}:secret:PATH_TO_GITLAB_TOKEN"
 
     gitlab_url                = "<GITLAB_FULL_URL>"
+    gitlab_runner_concurrency = 10
     gitlab_runner_name_prefix = "<RUNNER_NAME_PREFIX>"
     gitlab_runner_tag_list    = "<RUNNER_TAGS>"
 
