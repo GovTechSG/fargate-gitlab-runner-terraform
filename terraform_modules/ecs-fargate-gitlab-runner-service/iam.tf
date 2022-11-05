@@ -39,21 +39,17 @@ resource "aws_iam_role_policy" "manager_service_run_task" {
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "AllowRunTask",
+      "Sid": "AllowManageTasks",
       "Effect": "Allow",
       "Action": [
         "ecs:RunTask",
-        "ecs:ListTasks",
         "ecs:StartTask",
         "ecs:StopTask",
-        "ecs:ListContainerInstances",
         "ecs:DescribeTasks"
       ],
       "Resource": [
-        "${var.worker_ecs_cluster_arn}",
         "${replace(var.worker_ecs_cluster_arn, ":cluster/", ":task/")}/*",
-        "${replace(module.worker_task_definition.arn, "/[[:digit:]]+$/", "*")}",
-        "arn:aws:ecs:*:*:container-instance/*/*"
+        "${replace(module.worker_task_definition.arn, "/[[:digit:]]+$/", "*")}"
       ]
     },
     {
@@ -66,7 +62,7 @@ resource "aws_iam_role_policy" "manager_service_run_task" {
       "Resource": "*"
     },
     {
-      "Sid": "AllowPassRunnerECSExecRole",
+      "Sid": "AllowPassWorkerECSExecRole",
       "Effect": "Allow",
       "Action": "iam:PassRole",
       "Resource": "${aws_iam_role.worker_execution_role.arn}"
