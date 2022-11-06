@@ -28,7 +28,5 @@ inputs = merge(local.vars.inputs,
         }
       }
     }
-
-    tags = local.vars.inputs.tags_common
   }
 )
