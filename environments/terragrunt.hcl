@@ -6,6 +6,7 @@ locals {
     Terraform        = "true"
     Terraform-Dir    = "${get_path_from_repo_root()}"
     Project-Name     = "${local.vars.inputs.project_name}"
+    Owner            = "${local.vars.inputs.owner}"
     Environment      = "${local.vars.inputs.env}"
     Last-Modified-By = "${get_aws_caller_identity_arn()}"
   }
