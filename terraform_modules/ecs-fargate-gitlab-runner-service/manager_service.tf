@@ -53,7 +53,7 @@ module "manager_container_definition" {
     logDriver = "awslogs"
     options = {
       awslogs-create-group  = true
-      awslogs-region        = "ap-southeast-1"
+      awslogs-region        = var.aws_region
       awslogs-stream-prefix = var.service_name
       awslogs-group         = local.cloudwatch_log_group_name
     }

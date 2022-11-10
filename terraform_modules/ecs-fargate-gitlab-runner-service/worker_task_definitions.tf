@@ -27,7 +27,7 @@ module "worker_task_definition" {
   logConfiguration = {
     logDriver = "awslogs"
     options = {
-      awslogs-region        = "ap-southeast-1"
+      awslogs-region        = var.aws_region
       awslogs-stream-prefix = "${local.worker_task_name}-${each.key}"
       awslogs-group         = local.cloudwatch_log_group_name
     }
