@@ -14,7 +14,7 @@ locals {
 
 inputs = merge(local.vars.inputs,
   {
-    cluster_name = "${local.vars.inputs.project_name}-${local.vars.inputs.env}-fargate-gitlab-runner"
+    cluster_name = "${local.vars.inputs.project_name}-${local.vars.inputs.env}-fargate-gitlab-runner-workers"
 
     fargate_capacity_providers = {
       FARGATE = {

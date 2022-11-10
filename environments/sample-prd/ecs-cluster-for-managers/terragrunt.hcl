@@ -19,12 +19,12 @@ inputs = merge(local.vars.inputs,
     fargate_capacity_providers = {
       FARGATE = {
         default_capacity_provider_strategy = {
-          weight = 50
+          weight = 50 # Sample weight, adjust accordingly
         }
       }
       FARGATE_SPOT = {
         default_capacity_provider_strategy = {
-          weight = 50
+          weight = 50 # Sample weight, adjust accordingly
         }
       }
     }
