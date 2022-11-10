@@ -18,7 +18,6 @@ inputs = merge(local.vars.inputs,
     environment  = local.vars.inputs.env
     service_name = "--SERVICE-NAME--"
 
-    vpc_id                     = "<VPC_ID>"
     manager_instance_count     = 1
     manager_ecs_cluster_arn    = "arn:aws:ecs:${local.vars.inputs.aws_region}:${local.vars.inputs.aws_account_id}:cluster/<MANAGER_CLUSTER_NAME>"
     manager_docker_image       = "${local.vars.inputs.aws_account_id}.dkr.ecr.${local.vars.inputs.aws_region}.amazonaws.com/<MANAGER_DOCKER_IMAGE>"
