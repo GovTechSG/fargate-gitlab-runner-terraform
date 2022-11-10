@@ -17,6 +17,7 @@ resource "aws_iam_role_policy" "manager_service_get_secret" {
     {
       "Effect": "Allow",
       "Action": [
+        "ssm:GetParameters",
         "secretsmanager:GetSecretValue",
         "kms:Decrypt"
       ],
@@ -28,6 +29,13 @@ resource "aws_iam_role_policy" "manager_service_get_secret" {
   ]
 }
 EOF
+}
+
+locals {
+  task_definition_arns = toset(concat(
+    [for key, value in var.managers_configs : "${replace(value.worker_ecs_cluster_arn, ":cluster/", ":task/")}/*"],
+    [for key, value in var.managers_configs : replace(module.worker_task_definition[key].arn, "/[[:digit:]]+$/", "*")]
+  ))
 }
 
 resource "aws_iam_role_policy" "manager_service_run_task" {
@@ -47,10 +55,7 @@ resource "aws_iam_role_policy" "manager_service_run_task" {
         "ecs:StopTask",
         "ecs:DescribeTasks"
       ],
-      "Resource": [
-        "${replace(var.worker_ecs_cluster_arn, ":cluster/", ":task/")}/*",
-        "${replace(module.worker_task_definition.arn, "/[[:digit:]]+$/", "*")}"
-      ]
+      "Resource": ${jsonencode(local.task_definition_arns)}
     },
     {
       "Sid": "AllowListTasks",

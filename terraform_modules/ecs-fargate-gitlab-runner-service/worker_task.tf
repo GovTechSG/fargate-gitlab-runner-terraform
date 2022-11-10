@@ -1,4 +1,6 @@
 module "worker_task_definition" {
+  for_each = var.managers_configs
+
   # https://registry.terraform.io/modules/mongodb/ecs-task-definition/aws/latest
   source  = "mongodb/ecs-task-definition/aws"
   version = "2.1.5"
@@ -6,14 +8,14 @@ module "worker_task_definition" {
   # Hardcoded name required by the Fargate executor driver
   # https://docs.gitlab.com/runner/configuration/runner_autoscale_aws_fargate/#step-6-create-an-ecs-task-definition
   name   = "ci-coordinator"
-  family = local.worker_task_name
-  image  = var.worker_docker_image
-  cpu    = var.worker_cpu
-  memory = var.worker_memory
+  family = "${local.worker_task_name}-${each.key}"
+  image  = each.value.worker_docker_image
+  cpu    = each.value.worker_cpu
+  memory = each.value.worker_memory
 
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  task_role_arn            = var.worker_task_role_arn
+  task_role_arn            = each.value.worker_task_role_arn
   execution_role_arn       = aws_iam_role.worker_execution_role.arn
 
   portMappings = [
@@ -26,7 +28,7 @@ module "worker_task_definition" {
     logDriver = "awslogs"
     options = {
       awslogs-region        = "ap-southeast-1"
-      awslogs-stream-prefix = local.worker_task_name
+      awslogs-stream-prefix = "${local.worker_task_name}-${each.key}"
       awslogs-group         = local.cloudwatch_log_group_name
     }
   }

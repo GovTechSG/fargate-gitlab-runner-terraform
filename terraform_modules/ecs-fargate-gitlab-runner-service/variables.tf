@@ -6,42 +6,45 @@ variable "environment" {
   type = string
 }
 
-variable "vpc_id" {
-  type = string
-}
-
 variable "project_code" {
   type = string
 }
 
 variable "service_name" {
-  type = string
+  description = "Name of the service, actual ECS service will be <project_code>-<environment>-<service_name>"
+  type        = string
 }
 
 variable "manager_ecs_cluster_arn" {
-  type = string
+  description = "ARN of the ECS Cluster for managers"
+  type        = string
 }
 
 variable "manager_instance_count" {
-  type    = number
-  default = 1
+  description = "Number of ECS Fargate instances. Final number of GitLab runners is manager_instance_count * length(keys(managers_configs))"
+  type        = number
+  default     = 1
 }
 
 variable "manager_security_group_ids" {
-  type = list(string)
+  description = "Security Group IDs for manager ECS Fargate task"
+  type        = list(string)
 }
 
 variable "manager_subnet_ids" {
-  type = list(string)
+  description = "Subnet IDs for manager ECS Fargate task"
+  type        = list(string)
 }
 
 variable "tags_common" {
-  type    = map(string)
-  default = {}
+  description = "Additional common tags not included in aws provider's default_tags"
+  type        = map(string)
+  default     = {}
 }
 
 variable "gitlab_token_secret_arn" {
-  type = string
+  description = "ARN of the secret in either Secret Manager or Parameter Store which stores the GitLab token for runner registration"
+  type        = string
 }
 
 variable "secrets_kms_key" {
@@ -50,64 +53,61 @@ variable "secrets_kms_key" {
 }
 
 variable "manager_docker_image" {
+  description = ""
+  type        = string
 }
 
 variable "iam_permissions_boundary" {
-  type    = string
-  default = null
+  description = "Permissions Boundary to be added to any generated IAM Role"
+  type        = string
+  default     = null
 }
 
 variable "gitlab_url" {
-  type = string
+  description = "Full URL to GitLab instance, e.g., https://gitlab.com/"
+  type        = string
 }
 
 variable "gitlab_runner_concurrency" {
+  description = "Number of jobs that can run concurrently. Refer to the guide at https://www.howtogeek.com/devops/how-to-manage-gitlab-runner-concurrency-for-parallel-ci-jobs/"
   type        = number
-  description = "Number of jobs that can run concurrently. Note that this is limited by the number of available IPs in the worker subnet"
   default     = 10
 }
 
 variable "gitlab_runner_name_prefix" {
-  type        = string
   description = "Prefix for the runner name as shown in Gitlab, can contain only alphanumeric characters, -, _ or . symbols."
-}
-
-variable "gitlab_runner_tag_list" {
   type        = string
-  description = "Comma-separated list of tags to associate this Fargate runner with"
-  default     = ""
 }
 
-variable "worker_ecs_cluster_arn" {
-  type = string
-}
-
-variable "worker_subnet_id" {
-  type = string
-}
-
-variable "worker_security_group_id" {
-  type = string
-}
-
-variable "worker_docker_image" {
-  type = string
-}
-
-variable "worker_cpu" {
-  type        = number
-  description = "The number of cpu units reserved for the container"
-  default     = 256
-}
-
-variable "worker_memory" {
-  type        = number
-  description = "The hard limit (in MiB) of memory to present to the container"
-  default     = 512
-}
-
-variable "worker_task_role_arn" {
-  type        = string
-  description = "The role that the worker task should take"
-  default     = ""
+variable "managers_configs" {
+  description = "Map of managers' names and their worker configs. Final number of GitLab runners is manager_instance_count * length(keys(managers_configs))"
+  type = map(object({
+    tags : list(string)
+    limit : number, # Note that this is limited by the number of available IPs in the worker subnet
+    worker_docker_image : string
+    worker_cpu : number
+    worker_memory : number
+    worker_ecs_cluster_arn : string
+    worker_aws_region : string
+    worker_subnet_id : string
+    worker_security_group_id : string
+    worker_ssh_user : string
+    worker_task_role_arn : string
+  }))
+  # default value as a sample
+  default = {
+    r1 : {
+      tags : ["env1", "tool1", "tool2"]
+      limit : 10
+      worker_docker_image : "image_1"
+      worker_cpu : 256
+      worker_memory : 512
+      worker_ecs_cluster_arn : "ecs_cluster_arn_1"
+      worker_aws_region : "region-1"
+      worker_subnet_id : "subnet-123"
+      "worker_security_group_id" : "sg-321"
+      "worker_ssh_user" : "user_1"
+      "worker_task_role_arn" : "task_role_arn_1"
+    }
+  }
 }

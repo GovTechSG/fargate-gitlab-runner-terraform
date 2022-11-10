@@ -1,3 +1,18 @@
+locals {
+  manager_configs = {
+    for key, value in var.managers_configs :
+    key => merge(value, {
+      "manager_name" : key
+      "tag_list" : join(",", value.tags)
+      "worker_task_definition_arn" : module.worker_task_definition[key].arn
+    })
+  }
+}
+
+data "aws_subnet" "manager_subnet_1" {
+  id = var.manager_subnet_ids[0]
+}
+
 module "manager_service" {
   # https://registry.terraform.io/modules/cloudposse/ecs-alb-service-task/aws/latest
   source  = "cloudposse/ecs-alb-service-task/aws"
@@ -12,7 +27,7 @@ module "manager_service" {
   ecs_cluster_arn = var.manager_ecs_cluster_arn
   launch_type     = "FARGATE"
 
-  vpc_id                         = var.vpc_id
+  vpc_id                         = data.aws_subnet.manager_subnet_1.vpc_id
   security_group_ids             = var.manager_security_group_ids
   subnet_ids                     = var.manager_subnet_ids
   ignore_changes_task_definition = false
@@ -58,29 +73,9 @@ module "manager_container_definition" {
       "value" : var.gitlab_runner_name_prefix
     },
     {
-      "name" : "RUNNER_TAG_LIST",
-      "value" : var.gitlab_runner_tag_list
+      "name" : "MANAGERS_CONFIGS",
+      "value" : jsonencode(local.manager_configs)
     },
-    {
-      "name" : "WORKER_CLUSTER",
-      "value" : var.worker_ecs_cluster_arn
-    },
-    {
-      "name" : "WORKER_REGION",
-      "value" : var.aws_region
-    },
-    {
-      "name" : "WORKER_SUBNET",
-      "value" : var.worker_subnet_id
-    },
-    {
-      "name" : "WORKER_SECURITY_GROUP",
-      "value" : var.worker_security_group_id
-    },
-    {
-      "name" : "WORKER_TASK_DEFINITION",
-      "value" : module.worker_task_definition.arn
-    }
   ]
   secrets = [
     {
