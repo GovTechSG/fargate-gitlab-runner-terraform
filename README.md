@@ -1,6 +1,4 @@
-# fargate-gitlab-runner-terraform
-
-Terraform module for deploying ECS service for Fargate GitLab runner, with sample environment setups for `dev` and `prd` using Terragrunt.
+# Terraform module for deploying ECS service for Fargate GitLab runner
 
 This repo is part of a set of repos for the complete setup of ECS Service for managers and workers:
 * [fargate-gitlab-runner](../../../fargate-gitlab-runner): Docker image for the ECS task for all runner managers
