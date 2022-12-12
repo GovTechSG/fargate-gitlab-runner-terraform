@@ -26,6 +26,18 @@ variable "manager_instance_count" {
   default     = 1
 }
 
+variable "manager_cpu" {
+  description = "CPU of Manager ECS task"
+  type        = number
+  default     = 256
+}
+
+variable "manager_memory" {
+  description = "Memory of Manager ECS task"
+  type        = number
+  default     = 512
+}
+
 variable "manager_security_group_ids" {
   description = "Security Group IDs for manager ECS Fargate task"
   type        = list(string)

@@ -33,9 +33,10 @@ module "manager_service" {
   ignore_changes_task_definition = false
   deployment_controller_type     = "ECS"
   desired_count                  = var.manager_instance_count
-  task_memory                    = 512 # Use minimum memory and cpu settings
-  task_cpu                       = 256
+  task_memory                    = var.manager_memory
+  task_cpu                       = var.manager_cpu
   permissions_boundary           = var.iam_permissions_boundary
+  exec_enabled                   = true
 
   tags = var.tags_common
 }
