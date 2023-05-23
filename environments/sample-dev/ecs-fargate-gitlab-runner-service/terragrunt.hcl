@@ -23,7 +23,7 @@ inputs = merge(local.vars.inputs,
     manager_docker_image       = "${local.vars.inputs.aws_account_id}.dkr.ecr.${local.vars.inputs.aws_region}.amazonaws.com/<MANAGER_DOCKER_IMAGE>"
     manager_subnet_ids         = ["<MANAGER_SUBNET_1>", "<MANAGER_SUBNET_2>", "<MANAGER_SUBNET_3>"]
     manager_security_group_ids = ["<MANAGER_SECURITY_GROUP_1>"]
-    gitlab_token_secret_arn    = "arn:aws:secretsmanager:${local.vars.inputs.aws_region}:${local.vars.inputs.aws_region}:secret:PATH_TO_GITLAB_TOKEN"
+    gitlab_token_secret_arn    = "arn:aws:secretsmanager:${local.vars.inputs.aws_region}:${local.vars.inputs.aws_account_id}:secret:PATH_TO_GITLAB_TOKEN"
 
     gitlab_url                = "<GITLAB_FULL_URL>"
     gitlab_runner_concurrency = 10
